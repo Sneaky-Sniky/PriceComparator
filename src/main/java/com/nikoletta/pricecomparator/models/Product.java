@@ -4,11 +4,12 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import jakarta.persistence.Entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
-public class Product {
+public class Product implements Serializable {
     @Id
     private String id;
     private String productName;

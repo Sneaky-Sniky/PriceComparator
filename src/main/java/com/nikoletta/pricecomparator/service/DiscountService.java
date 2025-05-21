@@ -6,6 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,5 +28,12 @@ public class DiscountService {
     public List<Discount> getBestDiscounts() {
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("percentageOfDiscount").descending());
         return productDiscountRepository.findAll(pageRequest).getContent();
+    }
+
+    public List<Discount> getLatestDiscounts() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        return productDiscountRepository.findByFromDateGreaterThanEqual(
+                Date.from(yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 }

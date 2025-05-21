@@ -21,8 +21,13 @@ public class DiscountController {
         return discountService.findAll();
     }
 
-    @GetMapping("/best-discounts")
+    @GetMapping("/best")
     public List<Discount> getBestDiscounts() {
         return this.discountService.getBestDiscounts();
+    }
+
+    @GetMapping("/latest")
+    public List<Discount> getLatestDiscounts() {
+        return this.discountService.getLatestDiscounts();
     }
 }

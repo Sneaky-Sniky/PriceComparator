@@ -1,14 +1,14 @@
 package com.nikoletta.pricecomparator.controllers;
 
+import com.nikoletta.pricecomparator.dtos.PriceHistoryDTO;
 import com.nikoletta.pricecomparator.dtos.ProductAlternativeDTO;
 import com.nikoletta.pricecomparator.dtos.ProductWithBestPriceDTO;
 import com.nikoletta.pricecomparator.models.Product;
 import com.nikoletta.pricecomparator.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,5 +34,15 @@ public class ProductController {
     @GetMapping("alternatives")
     public List<ProductAlternativeDTO> getBetterAlternatives(@RequestParam String productId) {
         return productService.findBetterAlternatives(productId);
+    }
+
+    @GetMapping("price-history")
+    public Map<String, List<PriceHistoryDTO>> getPriceHistory(
+            @RequestParam(required = false) String shop,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        return productService.getPriceHistory(shop, category, brand, startDate, endDate);
     }
 }

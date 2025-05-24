@@ -1,5 +1,6 @@
 package com.nikoletta.pricecomparator.service;
 
+import com.nikoletta.pricecomparator.dtos.PriceHistoryDTO;
 import com.nikoletta.pricecomparator.dtos.ProductAlternativeDTO;
 import com.nikoletta.pricecomparator.dtos.ProductWithBestPriceDTO;
 import com.nikoletta.pricecomparator.models.Discount;
@@ -8,8 +9,12 @@ import com.nikoletta.pricecomparator.models.ProductPrice;
 import com.nikoletta.pricecomparator.repositories.ProductDiscountRepository;
 import com.nikoletta.pricecomparator.repositories.ProductPriceRepository;
 import com.nikoletta.pricecomparator.repositories.ProductRepository;
+import com.nikoletta.pricecomparator.specifications.PriceHistorySpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,7 @@ public class ProductService {
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+
     public Map<String, List<ProductWithBestPriceDTO>> getShoppingList(List<String> productIds) {
         List<Product> products = productRepository.findByIdIn(productIds);
         List<ProductPrice> allPrices = productPriceRepository.findByProductIn(products);
@@ -64,7 +70,6 @@ public class ProductService {
         }
 
         return result;
-
     }
 
     public List<ProductAlternativeDTO> findBetterAlternatives(String productId) {
@@ -115,5 +120,24 @@ public class ProductService {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, List<PriceHistoryDTO>> getPriceHistory(String shop, String category, String brand, Date startDate, Date endDate) {
+        if (endDate == null) {
+            endDate = new Date();
+        }
+        if (startDate == null) {
+            startDate = Date.from(LocalDate.now().minusMonths(1)
+                    .atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        Specification<ProductPrice> spec = PriceHistorySpecification.withFilters(
+                shop, category, brand, startDate, endDate);
+
+        List<ProductPrice> priceHistory = productPriceRepository.findAll(spec);
+
+        return priceHistory.stream()
+                .map(PriceHistoryDTO::fromProductPrice)
+                .collect(Collectors.groupingBy(PriceHistoryDTO::getProductId));
     }
 }

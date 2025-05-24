@@ -1,5 +1,6 @@
 package com.nikoletta.pricecomparator.controllers;
 
+import com.nikoletta.pricecomparator.dtos.ProductAlternativeDTO;
 import com.nikoletta.pricecomparator.dtos.ProductWithBestPriceDTO;
 import com.nikoletta.pricecomparator.models.Product;
 import com.nikoletta.pricecomparator.service.ProductService;
@@ -27,6 +28,11 @@ public class ProductController {
 
     @GetMapping("shopping-list")
     public Map<String, List<ProductWithBestPriceDTO>> getShoppingList(@RequestParam List<String> productIds) {
-        return productService.getShoppingList( productIds);
+        return productService.getShoppingList(productIds);
+    }
+
+    @GetMapping("alternatives")
+    public List<ProductAlternativeDTO> getBetterAlternatives(@RequestParam String productId) {
+        return productService.findBetterAlternatives(productId);
     }
 }

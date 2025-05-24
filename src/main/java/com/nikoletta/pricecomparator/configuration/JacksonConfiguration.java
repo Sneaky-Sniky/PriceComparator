@@ -16,6 +16,8 @@ public class JacksonConfiguration {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setDateFormat(sdf);
         mapper.addMixIn(Object.class, IgnoreHibernatePropertiesInJackson.class);
+        mapper.findAndRegisterModules();
+
         return mapper;
     }
 

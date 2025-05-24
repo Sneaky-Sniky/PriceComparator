@@ -2,8 +2,6 @@ package com.nikoletta.pricecomparator.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.LazyGroup;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 

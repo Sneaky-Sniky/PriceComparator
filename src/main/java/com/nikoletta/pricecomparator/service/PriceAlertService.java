@@ -8,6 +8,8 @@ import com.nikoletta.pricecomparator.repositories.PriceAlertRepository;
 import com.nikoletta.pricecomparator.repositories.ProductDiscountRepository;
 import com.nikoletta.pricecomparator.repositories.ProductPriceRepository;
 import com.nikoletta.pricecomparator.repositories.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @Service
 public class PriceAlertService {
+    private static final Logger logger = LoggerFactory.getLogger(PriceAlertService.class);
     private final ProductRepository productRepository;
     private final ProductPriceRepository productPriceRepository;
     private final ProductDiscountRepository productDiscountRepository;
@@ -33,7 +36,6 @@ public class PriceAlertService {
     }
 
     public PriceAlert createPriceAlert(String productId, double targetPrice) {
-        // Verify product exists
         Optional<Product> product = productRepository.findById(productId);
         if (product.isEmpty()) {
             throw new IllegalArgumentException("Product not found with ID: " + productId);
@@ -83,9 +85,8 @@ public class PriceAlertService {
 
     private void notifyPriceAlert(PriceAlert alert, Product product, double currentPrice, String shop) {
         // TODO: Implement notification logic (email, push notification, etc.)
-        System.out.println("Price Alert: Product " + product.getProductName() +
-                          " has reached target price of " + alert.getTargetPrice() +
-                          " (Current price: " + currentPrice + " at " + shop + ")");
+        logger.info("Price Alert: Product {} has reached target price of {} (Current price: {} at {})",
+                product.getProductName(), alert.getTargetPrice(), currentPrice, shop);
     }
 
     public void deleteAlert(Long alertId) {

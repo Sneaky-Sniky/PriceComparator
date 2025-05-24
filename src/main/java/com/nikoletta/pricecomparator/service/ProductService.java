@@ -76,32 +76,26 @@ public class ProductService {
         Product targetProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found"));
 
-        // Get latest prices for the target product
         List<ProductPrice> targetPrices = productPriceRepository.findLatestPricesByProduct(targetProduct, new Date());
         if (targetPrices.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // Calculate the best unit price for the target product
         double bestTargetUnitPrice = targetPrices.stream()
                 .mapToDouble(price -> price.getPrice() / targetProduct.getPackageQuantity())
                 .min()
                 .orElse(Double.MAX_VALUE);
 
-        // Find products in the same category
         List<Product> sameCategoryProducts = productRepository.findAll().stream()
                 .filter(p -> p.getProductCategory().equals(targetProduct.getProductCategory()))
                 .filter(p -> !p.getId().equals(productId))
                 .collect(Collectors.toList());
 
-        // Get latest prices for all alternative products
         List<ProductPrice> alternativePrices = productPriceRepository.findByProductIn(sameCategoryProducts);
 
-        // Group prices by product
         Map<String, List<ProductPrice>> pricesByProduct = alternativePrices.stream()
                 .collect(Collectors.groupingBy(p -> p.getProduct().getId()));
 
-        // Find products with better unit prices
         return sameCategoryProducts.stream()
                 .map(product -> {
                     List<ProductPrice> productPrices = pricesByProduct.getOrDefault(product.getId(), Collections.emptyList());

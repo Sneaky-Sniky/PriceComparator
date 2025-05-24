@@ -12,7 +12,7 @@ public class PriceAlertScheduler {
         this.priceAlertService = priceAlertService;
     }
 
-    @Scheduled(fixedRate = 300000) // Check every 5 minutes
+    @Scheduled(fixedRateString = "${price.alert.check.rate}")
     public void checkPriceAlerts() {
         priceAlertService.checkPriceAlerts();
     }

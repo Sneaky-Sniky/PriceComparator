@@ -42,9 +42,11 @@ public class PriceHistorySpecification {
             if (endDate != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), endDate));
             }
-            
-            query.orderBy(criteriaBuilder.asc(root.get("date")));
-            
+
+            if(query != null) {
+                query.orderBy(criteriaBuilder.asc(root.get("date")));
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

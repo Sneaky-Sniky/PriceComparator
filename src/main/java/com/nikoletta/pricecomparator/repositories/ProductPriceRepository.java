@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface ProductPriceRepository extends JpaRepository<ProductPrice, Long>, JpaSpecificationExecutor<ProductPrice> {
     List<ProductPrice> findByProductIn(List<Product> products);
-    List<ProductPrice> findAllByProduct(Product product);
     @Query("SELECT pp FROM ProductPrice pp WHERE pp.product = :product AND pp.date <= :date AND (pp.date, pp.shop) IN (SELECT MAX(p.date), p.shop FROM ProductPrice p WHERE p.product = :product AND p.date <= :date GROUP BY p.shop)")
     List<ProductPrice> findLatestPricesByProduct(Product product, Date date);
 }

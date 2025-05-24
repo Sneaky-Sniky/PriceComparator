@@ -1,11 +1,10 @@
 package com.nikoletta.pricecomparator.models;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
-import jakarta.persistence.Entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @Entity
